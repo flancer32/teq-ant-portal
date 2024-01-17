@@ -1,0 +1,51 @@
+{
+  "package": {
+    "fl32": {
+      "package": {
+        "portal": {
+          "entity": {
+            "host": {
+              "comment": "The host registry.",
+              "attr": {
+                "bid": {"type": "id", "comment": "Backend ID for the object."},
+                "uuid": {"type": "string", "comment": "Universal ID among all hosts."},
+                "key_pub": {
+                  "comment": "Public key for encryption and signature verification.",
+                  "type": "string"
+                },
+                "enabled": {"type": "boolean", "default": true},
+                "date_created": {
+                  "comment": "UTC date-time for host registration.",
+                  "type": "datetime",
+                  "default": "current"
+                }
+              },
+              "index": {
+                "uuid": {"type": "unique", "attrs": ["uuid"]}
+              }
+            }
+          },
+          "package": {
+            "msg": {
+              "entity": {
+                "queue": {
+                  "comment": "The messages queue.",
+                  "attr": {
+                    "bid": {"type": "id", "comment": "Backend ID for the object."},
+                    "uuid": {"type": "string", "comment": "Universal ID among all hosts."}
+                  },
+                  "index": {
+                    "uuid": {"type": "unique", "attrs": ["uuid"]}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "refs": {
+    "/user": ["bid"]
+  }
+}

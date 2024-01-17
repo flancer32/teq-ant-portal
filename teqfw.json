@@ -1,0 +1,15 @@
+{
+  "@teqfw/di": {
+    "autoload": {
+      "ns": "Fl32_Portal",
+      "path": "./src",
+      "ext": "js"
+    }
+  },
+  "@teqfw/web": {
+    "handlers": {}
+  },
+  "@teqfw/web-api": {
+    "services": []
+  }
+}
