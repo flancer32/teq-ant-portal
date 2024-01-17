@@ -15,7 +15,7 @@
   },
   "repository": "github:flancer32/teq-ant-portal",
   "dependencies": {
-    "@flancer32/teq-ant-auth": "latest"
+    "@flancer32/teq-ant-auth": "github:@flancer32/teq-ant-auth"
   },
   "devDependencies": {
     "mocha": "*"
