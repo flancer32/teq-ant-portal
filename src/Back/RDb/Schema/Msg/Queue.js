@@ -16,6 +16,12 @@ const ENTITY = '/fl32/portal/msg/queue';
  */
 const ATTR = {
     BID: 'bid',
+    BODY: 'body',
+    DATE_EXPIRE: 'date_expire',
+    FROM_HOST: 'from_host',
+    FROM_USER: 'from_user',
+    TO_HOST: 'to_host',
+    TO_USER: 'to_user',
     UUID: 'uuid',
 };
 Object.freeze(ATTR);
@@ -32,7 +38,37 @@ class Dto {
      */
     bid;
     /**
-     * Universal ID among all hosts.
+     * The message body (encrypted).
+     * @type {string}
+     */
+    body;
+    /**
+     * The message must be removed if it is not transmitted after this date.
+     * @type {Date}
+     */
+    date_expire;
+    /**
+     * The UUID for the host of the sender.
+     * @type {string}
+     */
+    from_host;
+    /**
+     * The UUID for the message sender.
+     * @type {string}
+     */
+    from_user;
+    /**
+     * The UUID for the host of the receiver.
+     * @type {string}
+     */
+    to_host;
+    /**
+     * The UUID for the message receiver.
+     * @type {string}
+     */
+    to_user;
+    /**
+     * Universal ID for the message.
      * @type {string}
      */
     uuid;
@@ -46,13 +82,13 @@ export default class Fl32_Portal_Back_RDb_Schema_Msg_Queue {
     /**
      * @param {Fl32_Portal_Back_Defaults} DEF
      * @param {TeqFw_Db_Back_RDb_Schema_EntityBase} base
-     * @param {TeqFw_Core_Shared_Util_Cast} util
+     * @param {TeqFw_Core_Shared_Util_Cast} cast
      */
     constructor(
         {
             Fl32_Portal_Back_Defaults$: DEF,
             TeqFw_Db_Back_RDb_Schema_EntityBase$: base,
-            TeqFw_Core_Shared_Util_Cast$: util,
+            TeqFw_Core_Shared_Util_Cast$: cast,
         }
     ) {
         // INSTANCE METHODS
@@ -62,8 +98,14 @@ export default class Fl32_Portal_Back_RDb_Schema_Msg_Queue {
          */
         this.createDto = function (data) {
             const res = new Dto();
-            res.bid = util.castInt(data?.bid);
-            res.uuid = util.castString(data?.uuid);
+            res.bid = cast.int(data?.bid);
+            res.body = cast.string(data?.body);
+            res.date_expire = cast.date(data?.date_expire);
+            res.from_host = cast.string(data?.from_host);
+            res.from_user = cast.string(data?.from_user);
+            res.to_host = cast.string(data?.to_host);
+            res.to_user = cast.string(data?.to_user);
+            res.uuid = cast.string(data?.uuid);
             return res;
         };
 

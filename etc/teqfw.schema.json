@@ -29,10 +29,19 @@
             "msg": {
               "entity": {
                 "queue": {
-                  "comment": "The messages queue.",
+                  "comment": "The transmitted messages queue.",
                   "attr": {
                     "bid": {"type": "id", "comment": "Backend ID for the object."},
-                    "uuid": {"type": "string", "comment": "Universal ID among all hosts."}
+                    "uuid": {"type": "string", "comment": "Universal ID for the message."},
+                    "from_user": {"type": "string", "comment": "The UUID for the message sender."},
+                    "to_user": {"type": "string", "comment": "The UUID for the message receiver."},
+                    "date_expire": {
+                      "type": "datetime",
+                      "comment": "The message must be removed if it is not transmitted after this date."
+                    },
+                    "from_host": {"type": "string", "comment": "The UUID for the host of the sender."},
+                    "to_host": {"type": "string", "comment": "The UUID for the host of the receiver."},
+                    "body": {"type": "binary", "comment": "The message body (encrypted)."}
                   },
                   "index": {
                     "uuid": {"type": "unique", "attrs": ["uuid"]}

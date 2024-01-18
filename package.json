@@ -1,6 +1,7 @@
 {
   "name": "@flancer32/teq-ant-portal",
   "version": "0.1.0",
+  "type": "module",
   "description": "The messaging portal for TeqFW apps (the 'ant' generation).",
   "homepage": "https://github.com/flancer32/teq-ant-portal/",
   "bugs": {

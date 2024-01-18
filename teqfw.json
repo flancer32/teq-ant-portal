@@ -10,6 +10,8 @@
     "handlers": {}
   },
   "@teqfw/web-api": {
-    "services": []
+    "services": [
+      "Fl32_Portal_Back_Web_Api_Msg_Transmit"
+    ]
   }
 }
