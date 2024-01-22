@@ -1,8 +1,6 @@
 /**
  * Receive the message from the sender and save it in the queue to transmit to the receiver.
- */
-// MODULE'S CLASSES
-/**
+ *
  * @implements TeqFw_Web_Api_Back_Api_Service
  */
 export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
