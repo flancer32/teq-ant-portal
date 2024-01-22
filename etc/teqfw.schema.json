@@ -41,7 +41,7 @@
                     },
                     "from_host": {"type": "string", "comment": "The UUID for the host of the sender."},
                     "to_host": {"type": "string", "comment": "The UUID for the host of the receiver."},
-                    "body": {"type": "binary", "comment": "The message body (encrypted)."}
+                    "body": {"type": "text", "comment": "The message body (encrypted)."}
                   },
                   "index": {
                     "uuid": {"type": "unique", "attrs": ["uuid"]}

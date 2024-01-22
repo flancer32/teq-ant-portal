@@ -91,11 +91,22 @@ export default class Fl32_Portal_Back_Mod_Events_Stream_Registry {
         };
 
         /**
-         * @param {string} streamUuid
-         * @return {Fl32_Portal_Back_Mod_Events_Stream}
+         * Get one stream for the given identifier.
+         * @param {string} [streamUuid]
+         * @param {string} [userUuid]
+         * @return {Fl32_Portal_Back_Mod_Events_Stream|null}
+         * TODO: add getStreams({...})
          */
-        this.getStream = function ({streamUuid}) {
+        this.getStream = function ({streamUuid, userUuid}) {
             if (streamUuid) return _store[streamUuid];
+            if (userUuid) {
+                const ids = _byUser[userUuid];
+                if (Array.isArray(ids)) {
+                    const [firstStreamUuid] = ids;
+                    return _store[firstStreamUuid];
+                }
+            }
+            return null;
         };
 
     }

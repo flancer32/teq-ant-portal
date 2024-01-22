@@ -76,15 +76,15 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                         /** @type {Fl32_Portal_Shared_Dto_Event_Cover.Dto} */
                         const cover = JSON.parse(data);
                         if (cover.type === TYPE.AUTHENTICATE) processAuth(cover.data);
-                        else if (cover.type === TYPE.MESSAGE) console.log(`Message`);
+                        else if (cover.type === TYPE.MESSAGE) logger.info(`Message: ${JSON.stringify(cover.data)}`);
+                        else logger.info(`Message: ${JSON.stringify(data)}`);
+                    } else {
+                        logger.info(`Event: ${JSON.stringify(data)}`);
                     }
                 } catch (e) {
                     logger.error(e);
                 }
             });
-            setTimeout(() => {
-                _source.close();
-            }, 3000);
         };
     }
 }

@@ -3,7 +3,6 @@
  */
 export default class Fl32_Portal_Front_App_Connect_Transmit {
     /**
-     * @param {Fl32_Portal_Front_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger -  instance
      * @param {TeqFw_Core_Shared_Util_Date.addDays|function} addDays
      * @param {TeqFw_Web_Api_Front_Web_Connect} api
@@ -11,7 +10,6 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
      */
     constructor(
         {
-            Fl32_Portal_Front_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             'TeqFw_Core_Shared_Util_Date.addDays': addDays,
             TeqFw_Web_Api_Front_Web_Connect$: api,
@@ -20,7 +18,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
     ) {
 
         // INSTANCE'S METHODS
-        this.send = async function (msg, to, from) {
+        this.send = async function (msg, from, to) {
             logger.info(`Sending the message to the host.`);
             const req = endTrans.createReq();
             req.body = msg;

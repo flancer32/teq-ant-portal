@@ -10,6 +10,9 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
      * @param {TeqFw_Db_Back_RDb_IConnect} conn
      * @param {TeqFw_Db_Back_Api_RDb_CrudEngine} crud
      * @param {Fl32_Portal_Back_RDb_Schema_Msg_Queue} rdbQueue
+     * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
+     * @param {Fl32_Portal_Shared_Dto_Event_Cover} dtoCover
+     * @param {typeof Fl32_Portal_Shared_Enum_Event_Type} TYPE
      */
     constructor(
         {
@@ -18,6 +21,9 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
             TeqFw_Db_Back_RDb_IConnect$: conn,
             TeqFw_Db_Back_Api_RDb_CrudEngine$: crud,
             Fl32_Portal_Back_RDb_Schema_Msg_Queue$: rdbQueue,
+            Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
+            Fl32_Portal_Shared_Dto_Event_Cover$: dtoCover,
+            Fl32_Portal_Shared_Enum_Event_Type$: TYPE,
         }
     ) {
         // VARS
@@ -50,6 +56,17 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                 const {[A_QUEUE.BID]: bid} = await crud.create(trx, rdbQueue, dto);
                 await trx.commit();
                 logger.info(`New message is registered as #${bid}.`);
+                // TODO: validate host to receive the message
+                const userUuid = req.to.user;
+                const stream = modRegistry.getStream({userUuid});
+                if (stream) {
+                    logger.info(`The stream '${stream.getStreamUuid()}' is found for user '${userUuid}'.`);
+                    const payload = dtoCover.createDto();
+                    payload.type = TYPE.MESSAGE;
+                    payload.data = dto;
+                    stream.write(payload);
+                    res.success = true;
+                }
                 logger.info(`Response: ${JSON.stringify(res)}`);
             } catch (error) {
                 logger.error(error);
