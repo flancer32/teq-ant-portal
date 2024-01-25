@@ -9,11 +9,12 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
      * @param {Fl32_Portal_Shared_Web_Api_Stream_Auth} endAuth
      * @param {Fl32_Auth_Front_Mod_Session} modSession
      * @param {Fl32_Portal_Front_Mod_TabUuid} modTabUuid
+     * @param {Fl32_Portal_Front_Mod_Event_Dispatcher} modDispatcher
      * @param {Fl32_Auth_Shared_Api_Crypto_Scrambler} modScrambler
      * @param {Fl32_Portal_Shared_Mod_Stream_Signature} modSignature
-     * @param {Fl32_Portal_Shared_Dto_Event_Authenticate} dtoAuth
-     * @param {Fl32_Portal_Shared_Dto_Event_Cover} dtoCover
-     * @param {typeof Fl32_Portal_Shared_Enum_Event_Type} TYPE
+     * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate} dtoAuth
+     * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter} dtoLetter
+     * @param {typeof Fl32_Portal_Shared_Enum_Msg_Type} TYPE
      */
     constructor(
         {
@@ -23,11 +24,12 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             Fl32_Portal_Shared_Web_Api_Stream_Auth$: endAuth,
             Fl32_Auth_Front_Mod_Session$: modSession,
             Fl32_Portal_Front_Mod_TabUuid$: modTabUuid,
+            Fl32_Portal_Front_Mod_Event_Dispatcher$: modDispatcher,
             Fl32_Auth_Shared_Api_Crypto_Scrambler$: modScrambler,
             Fl32_Portal_Shared_Mod_Stream_Signature$: modSignature,
-            Fl32_Portal_Shared_Dto_Event_Authenticate$: dtoAuth,
-            Fl32_Portal_Shared_Dto_Event_Cover$: dtoCover,
-            Fl32_Portal_Shared_Enum_Event_Type$: TYPE,
+            Fl32_Portal_Shared_Dto_Msg_Type_Authenticate$: dtoAuth,
+            Fl32_Portal_Shared_Dto_Msg_Type_Letter$: dtoLetter,
+            Fl32_Portal_Shared_Enum_Msg_Type$: TYPE,
         }
     ) {
         // VARS
@@ -39,7 +41,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
 
         /**
          * Sign identification data and send the signature to the back.
-         * @param {Fl32_Portal_Shared_Dto_Event_Authenticate.Dto} data
+         * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate.Dto} data
          * @return {Promise<void>}
          */
         async function processAuth(data) {
@@ -69,15 +71,22 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             const url = `${URL}/${tabId}`;
             logger.info(`Open the SSE stream for tab '${tabId}'.`);
             _source = new EventSource(url);
-            _source.addEventListener('message', (event) => {
+            _source.addEventListener('message', (message) => {
                 try {
-                    const data = event.data;
+                    const data = message.data;
                     if (data) {
-                        /** @type {Fl32_Portal_Shared_Dto_Event_Cover.Dto} */
+                        /** @type {Fl32_Portal_Shared_Dto_Msg_Cover.Dto} */
                         const cover = JSON.parse(data);
-                        if (cover.type === TYPE.AUTHENTICATE) processAuth(cover.data);
-                        else if (cover.type === TYPE.MESSAGE) logger.info(`Message: ${JSON.stringify(cover.data)}`);
-                        else logger.info(`Message: ${JSON.stringify(data)}`);
+                        if (cover.type === TYPE.AUTHENTICATE) {
+                            const auth = dtoAuth.createDto(cover.payload);
+                            processAuth(auth);
+                        } else if (cover.type === TYPE.LETTER) {
+                            const letter = dtoLetter.createDto(cover.payload);
+                            logger.info(`Message: ${JSON.stringify(letter)}`);
+                            const event = new Event(letter.type);
+                            event.data = letter;
+                            modDispatcher.dispatchEvent(event);
+                        } else logger.error(`Unknown portal message: ${message.data}`);
                     } else {
                         logger.info(`Event: ${JSON.stringify(data)}`);
                     }

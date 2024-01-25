@@ -1,6 +1,5 @@
 /**
  * Transmit the message to an addressee.
- * TODO: extract the message DTO
  */
 // MODULE'S VARS
 const NS = 'Fl32_Portal_Shared_Web_Api_Msg_Transmit';
@@ -12,24 +11,10 @@ const NS = 'Fl32_Portal_Shared_Web_Api_Msg_Transmit';
 class Request {
     static namespace = NS;
     /**
-     * The message body (encrypted).
-     * @type {string}
+     * The message cover with message data inside.
+     * @type {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto}
      */
-    body;
-    /**
-     * The message must be removed if it is not transmitted after this date.
-     * @type {Date}
-     */
-    dateExpire;
-    /** @type {Fl32_Portal_Shared_Dto_Id.Dto} */
-    from;
-    /** @type {Fl32_Portal_Shared_Dto_Id.Dto} */
-    to;
-    /**
-     * The message UUID.
-     * @type {string}
-     */
-    uuid;
+    letter;
 }
 
 /**
@@ -47,12 +32,12 @@ class Response {
 export default class Fl32_Portal_Shared_Web_Api_Msg_Transmit {
     /**
      * @param {TeqFw_Core_Shared_Util_Cast} cast
-     * @param {Fl32_Portal_Shared_Dto_Id} dtoId
+     * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter} dtoLetter
      */
     constructor(
         {
             TeqFw_Core_Shared_Util_Cast$: cast,
-            Fl32_Portal_Shared_Dto_Id$: dtoId,
+            Fl32_Portal_Shared_Dto_Msg_Type_Letter$: dtoLetter,
         }
     ) {
         // INSTANCE METHODS
@@ -65,11 +50,7 @@ export default class Fl32_Portal_Shared_Web_Api_Msg_Transmit {
             // create new DTO
             const res = new Request();
             // cast known attributes
-            res.body = cast.string(data?.body);
-            res.dateExpire = cast.date(data?.dateExpire);
-            res.from = dtoId.createDto(data?.from);
-            res.to = dtoId.createDto(data?.to);
-            res.uuid = cast.string(data?.uuid);
+            res.letter = dtoLetter.createDto(data?.letter);
             return res;
         };
 

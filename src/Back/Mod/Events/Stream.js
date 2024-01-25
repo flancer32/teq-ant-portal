@@ -36,9 +36,9 @@ export default class Fl32_Portal_Back_Mod_Events_Stream {
 
         this.getUserUuid = () => _userUuid;
 
-        this.write = function (payload) {
+        this.write = function (cover) {
             if (_httpResp.writable) {
-                const json = JSON.stringify(payload);
+                const json = JSON.stringify(cover);
                 _httpResp.write(`data: ${json}\n\n`);
                 _httpResp.write(`id: ${_messageId++}\n`);
                 return true;

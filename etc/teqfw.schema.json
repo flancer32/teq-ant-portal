@@ -33,6 +33,10 @@
                   "attr": {
                     "bid": {"type": "id", "comment": "Backend ID for the object."},
                     "uuid": {"type": "string", "comment": "Universal ID for the message."},
+                    "type": {
+                      "type": "string",
+                      "comment": "The type of the message - any string that is known to the sender and receiver."
+                    },
                     "from_user": {"type": "string", "comment": "The UUID for the message sender."},
                     "to_user": {"type": "string", "comment": "The UUID for the message receiver."},
                     "date_expire": {

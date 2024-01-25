@@ -8,8 +8,9 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
      * @param {TeqFw_Db_Back_Api_RDb_CrudEngine} crud
      * @param {Fl32_Portal_Back_RDb_Schema_Msg_Queue} rdbQueue
      * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
-     * @param {Fl32_Portal_Shared_Dto_Event_Cover} dtoCover
-     * @param {typeof Fl32_Portal_Shared_Enum_Event_Type} TYPE
+     * @param {Fl32_Portal_Shared_Dto_Msg_Cover} dtoCover
+     * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter} dtoLetter
+     * @param {typeof Fl32_Portal_Shared_Enum_Msg_Type} TYPE
      */
     constructor(
         {
@@ -18,8 +19,9 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
             TeqFw_Db_Back_Api_RDb_CrudEngine$: crud,
             Fl32_Portal_Back_RDb_Schema_Msg_Queue$: rdbQueue,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
-            Fl32_Portal_Shared_Dto_Event_Cover$: dtoCover,
-            Fl32_Portal_Shared_Enum_Event_Type$: TYPE,
+            Fl32_Portal_Shared_Dto_Msg_Cover$: dtoCover,
+            Fl32_Portal_Shared_Dto_Msg_Type_Letter$: dtoLetter,
+            Fl32_Portal_Shared_Enum_Msg_Type$: TYPE,
         }
     ) {
         // VARS
@@ -41,10 +43,19 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
                     const stream = modRegistry.getStream({userUuid});
                     logger.info(`Start the sending of '${all.length}' delayed messages to the user '${userUuid}'.`);
                     for (const one of all) {
-                        const payload = dtoCover.createDto();
-                        payload.type = TYPE.MESSAGE;
-                        payload.data = one;
-                        stream.write(payload);
+                        const letter = dtoLetter.createDto();
+                        letter.body = one.body;
+                        letter.dateExpire = one.date_expire;
+                        letter.from.host = one.from_host;
+                        letter.from.user = one.from_user;
+                        letter.to.host = one.to_host;
+                        letter.to.user = one.to_user;
+                        letter.type = one.type;
+                        letter.uuid = one.uuid;
+                        const cover = dtoCover.createDto();
+                        cover.payload = letter;
+                        cover.type = TYPE.LETTER;
+                        stream.write(cover);
                         logger.info(`The message '${one.uuid}' is sent to the user '${userUuid}'.`);
                     }
                 }

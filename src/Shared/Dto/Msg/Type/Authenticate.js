@@ -2,11 +2,11 @@
  * The backend request for front authentication.
  */
 // MODULE'S VARS
-const NS = 'Fl32_Portal_Shared_Dto_Event_Authenticate';
+const NS = 'Fl32_Portal_Shared_Dto_Msg_Type_Authenticate';
 
 // MODULE'S CLASSES
 /**
- * @memberOf Fl32_Portal_Shared_Dto_Event_Authenticate
+ * @memberOf Fl32_Portal_Shared_Dto_Msg_Type_Authenticate
  */
 class Dto {
     static namespace = NS;
@@ -20,7 +20,7 @@ class Dto {
 /**
  * @implements TeqFw_Core_Shared_Api_Factory_Dto
  */
-export default class Fl32_Portal_Shared_Dto_Event_Authenticate {
+export default class Fl32_Portal_Shared_Dto_Msg_Type_Authenticate {
     /**
      * @param {TeqFw_Core_Shared_Util_Cast} cast
      */
@@ -30,8 +30,8 @@ export default class Fl32_Portal_Shared_Dto_Event_Authenticate {
         }
     ) {
         /**
-         * @param {Fl32_Portal_Shared_Dto_Event_Authenticate.Dto} [data]
-         * @return {Fl32_Portal_Shared_Dto_Event_Authenticate.Dto}
+         * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate.Dto|Object} [data]
+         * @return {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate.Dto}
          */
         this.createDto = function (data) {
             // create new DTO

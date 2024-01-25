@@ -11,8 +11,8 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
      * @param {TeqFw_Db_Back_Api_RDb_CrudEngine} crud
      * @param {Fl32_Portal_Back_RDb_Schema_Msg_Queue} rdbQueue
      * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
-     * @param {Fl32_Portal_Shared_Dto_Event_Cover} dtoCover
-     * @param {typeof Fl32_Portal_Shared_Enum_Event_Type} TYPE
+     * @param {Fl32_Portal_Shared_Dto_Msg_Cover} dtoCover
+     * @param {typeof Fl32_Portal_Shared_Enum_Msg_Type} TYPE
      */
     constructor(
         {
@@ -22,8 +22,8 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
             TeqFw_Db_Back_Api_RDb_CrudEngine$: crud,
             Fl32_Portal_Back_RDb_Schema_Msg_Queue$: rdbQueue,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
-            Fl32_Portal_Shared_Dto_Event_Cover$: dtoCover,
-            Fl32_Portal_Shared_Enum_Event_Type$: TYPE,
+            Fl32_Portal_Shared_Dto_Msg_Cover$: dtoCover,
+            Fl32_Portal_Shared_Enum_Msg_Type$: TYPE,
         }
     ) {
         // VARS
@@ -44,27 +44,29 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
         this.process = async function (req, res, context) {
             const trx = await conn.startTransaction();
             try {
-                logger.info(`Request: ${JSON.stringify(req)}`);
+                const letter = req.letter;
+                logger.info(`Request '${JSON.stringify(letter.type)}' from '${JSON.stringify(letter.from)}' to '${JSON.stringify(letter.to)}'.`);
                 const dto = rdbQueue.createDto();
-                dto.body = req.body;
-                dto.date_expire = req.dateExpire;
-                dto.from_host = req.from.host;
-                dto.from_user = req.from.user;
-                dto.to_host = req.to.host;
-                dto.to_user = req.to.user;
-                dto.uuid = req.uuid;
+                dto.body = letter.body;
+                dto.date_expire = letter.dateExpire;
+                dto.from_host = letter.from.host;
+                dto.from_user = letter.from.user;
+                dto.to_host = letter.to.host;
+                dto.to_user = letter.to.user;
+                dto.type = letter.type;
+                dto.uuid = letter.uuid;
                 const {[A_QUEUE.BID]: bid} = await crud.create(trx, rdbQueue, dto);
                 await trx.commit();
                 logger.info(`New message is registered as #${bid}.`);
                 // TODO: validate host to receive the message
-                const userUuid = req.to.user;
+                const userUuid = letter.to.user;
                 const stream = modRegistry.getStream({userUuid});
                 if (stream) {
                     logger.info(`The stream '${stream.getStreamUuid()}' is found for user '${userUuid}'.`);
-                    const payload = dtoCover.createDto();
-                    payload.type = TYPE.MESSAGE;
-                    payload.data = dto;
-                    stream.write(payload);
+                    const cover = dtoCover.createDto();
+                    cover.payload = letter;
+                    cover.type = TYPE.LETTER;
+                    stream.write(letter);
                     res.success = true;
                 }
                 logger.info(`Response: ${JSON.stringify(res)}`);

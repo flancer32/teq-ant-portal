@@ -1,31 +1,31 @@
 /**
- * The cover structure for the event message.
+ * The endpoint ID to transmit a message through the portal.
  */
 // MODULE'S VARS
-const NS = 'Fl32_Portal_Shared_Dto_Event_Cover';
+const NS = 'Fl32_Portal_Shared_Dto_Msg_Address';
 
 // MODULE'S CLASSES
 /**
- * @memberOf Fl32_Portal_Shared_Dto_Event_Cover
+ * @memberOf Fl32_Portal_Shared_Dto_Msg_Address
  */
 class Dto {
     static namespace = NS;
     /**
-     * The payload.
-     * @type {*}
-     */
-    data;
-    /**
-     * The type of the data.
+     * The UUID for the user's host.
      * @type {string}
      */
-    type;
+    host;
+    /**
+     * The UUID for the user.
+     * @type {string}
+     */
+    user;
 }
 
 /**
  * @implements TeqFw_Core_Shared_Api_Factory_Dto
  */
-export default class Fl32_Portal_Shared_Dto_Event_Cover {
+export default class Fl32_Portal_Shared_Dto_Msg_Address {
     /**
      * @param {TeqFw_Core_Shared_Util_Cast} cast
      */
@@ -35,15 +35,15 @@ export default class Fl32_Portal_Shared_Dto_Event_Cover {
         }
     ) {
         /**
-         * @param {Fl32_Portal_Shared_Dto_Event_Cover.Dto} [data]
-         * @return {Fl32_Portal_Shared_Dto_Event_Cover.Dto}
+         * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} [data]
+         * @return {Fl32_Portal_Shared_Dto_Msg_Address.Dto}
          */
         this.createDto = function (data) {
             // create new DTO
             const res = new Dto();
             // cast known attributes
-            res.data = cast.object(data?.data);
-            res.type = cast.string(data?.type);
+            res.host = cast.string(data?.host);
+            res.user = cast.string(data?.user);
             return res;
         };
     }

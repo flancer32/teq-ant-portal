@@ -20,20 +20,20 @@ export default class Fl32_Portal_Back_Web_Handler_Events {
      * @param {Fl32_Portal_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger -  instance
      * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
-     * @param {Fl32_Portal_Shared_Dto_Event_Authenticate} dtoAuth
-     * @param {Fl32_Portal_Shared_Dto_Event_Cover} dtoCover
+     * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate} dtoAuth
+     * @param {Fl32_Portal_Shared_Dto_Msg_Cover} dtoCover
      * @param {Fl32_Portal_Back_Web_Handler_Events_A_Stream} aStream
-     * @param {typeof Fl32_Portal_Shared_Enum_Event_Type} TYPE
+     * @param {typeof Fl32_Portal_Shared_Enum_Msg_Type} TYPE
      */
     constructor(
         {
             Fl32_Portal_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
-            Fl32_Portal_Shared_Dto_Event_Authenticate$: dtoAuth,
-            Fl32_Portal_Shared_Dto_Event_Cover$: dtoCover,
+            Fl32_Portal_Shared_Dto_Msg_Type_Authenticate$: dtoAuth,
+            Fl32_Portal_Shared_Dto_Msg_Cover$: dtoCover,
             Fl32_Portal_Back_Web_Handler_Events_A_Stream$: aStream,
-            Fl32_Portal_Shared_Enum_Event_Type$: TYPE,
+            Fl32_Portal_Shared_Enum_Msg_Type$: TYPE,
         }
     ) {
 
@@ -69,10 +69,10 @@ export default class Fl32_Portal_Back_Web_Handler_Events {
                 modRegistry.addStream(stream);
                 const auth = dtoAuth.createDto();
                 auth.streamUuid = stream.getStreamUuid();
-                const payload = dtoCover.createDto();
-                payload.type = TYPE.AUTHENTICATE;
-                payload.data = auth;
-                stream.write(payload);
+                const cover = dtoCover.createDto();
+                cover.type = TYPE.AUTHENTICATE;
+                cover.payload = auth;
+                stream.write(cover);
             }
         }
 

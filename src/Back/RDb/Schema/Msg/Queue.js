@@ -22,6 +22,7 @@ const ATTR = {
     FROM_USER: 'from_user',
     TO_HOST: 'to_host',
     TO_USER: 'to_user',
+    TYPE: 'type',
     UUID: 'uuid',
 };
 Object.freeze(ATTR);
@@ -68,6 +69,11 @@ class Dto {
      */
     to_user;
     /**
+     * The type of the message - any string that is known to the sender and receiver.
+     * @type {string}
+     */
+    type;
+    /**
      * Universal ID for the message.
      * @type {string}
      */
@@ -105,6 +111,7 @@ export default class Fl32_Portal_Back_RDb_Schema_Msg_Queue {
             res.from_user = cast.string(data?.from_user);
             res.to_host = cast.string(data?.to_host);
             res.to_user = cast.string(data?.to_user);
+            res.type = cast.string(data?.type);
             res.uuid = cast.string(data?.uuid);
             return res;
         };
