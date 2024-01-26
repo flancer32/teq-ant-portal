@@ -28,7 +28,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
          * @return {Promise<void>}
          */
         this.send = async function (msg, from, to, type) {
-            logger.info(`Sending the message to the host.`);
+            logger.info(`Sending the '${type}' message to the host.`);
             const dto = dtoLetter.createDto();
             dto.body = JSON.stringify(msg);
             dto.dateExpire = addDays(7);
@@ -39,7 +39,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
             const req = endTrans.createReq();
             req.letter = dto;
             const res = await api.send(req, endTrans);
-            logger.info(`The message to the host is sent: ${JSON.stringify(res)}`);
+            logger.info(`The '${type}' message to the host is sent: ${JSON.stringify(res)}`);
         };
     }
 }
