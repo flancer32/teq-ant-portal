@@ -7,6 +7,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
      * @param {TeqFw_Core_Shared_Api_Logger} logger -  instance
      * @param {TeqFw_Web_Api_Front_Web_Connect} api
      * @param {Fl32_Portal_Shared_Web_Api_Stream_Auth} endAuth
+     * @param {Fl32_Portal_Shared_Web_Api_Msg_Remove} endRemove
      * @param {Fl32_Auth_Front_Mod_Session} modSession
      * @param {Fl32_Portal_Front_Mod_TabUuid} modTabUuid
      * @param {Fl32_Portal_Front_Mod_Msg_Dispatcher} modDispatcher
@@ -22,6 +23,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Api_Front_Web_Connect$: api,
             Fl32_Portal_Shared_Web_Api_Stream_Auth$: endAuth,
+            Fl32_Portal_Shared_Web_Api_Msg_Remove$: endRemove,
             Fl32_Auth_Front_Mod_Session$: modSession,
             Fl32_Portal_Front_Mod_TabUuid$: modTabUuid,
             Fl32_Portal_Front_Mod_Msg_Dispatcher$: modDispatcher,
@@ -94,6 +96,24 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                     logger.error(e);
                 }
             });
+        };
+
+        /**
+         * Send a signal to the backend to remove the processed message from the queue.
+         * @param {string} messageUuid
+         * @return {Promise<void>}
+         */
+        this.removeMessage = async function (messageUuid) {
+            const req = endRemove.createReq();
+            req.messageUuid = messageUuid;
+            req.userUuid = modSession.getUserUuid();
+            /** @type {Fl32_Portal_Shared_Web_Api_Msg_Remove.Response} */
+            const res = await api.send(req, endRemove);
+            if (res?.success) {
+                logger.info(`The message '${messageUuid}' is removed on the back.`);
+            } else {
+                logger.error(`The message '${messageUuid}' is not removed on the back.`);
+            }
         };
     }
 }

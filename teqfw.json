@@ -16,6 +16,7 @@
   },
   "@teqfw/web-api": {
     "services": [
+      "Fl32_Portal_Back_Web_Api_Msg_Remove",
       "Fl32_Portal_Back_Web_Api_Msg_Transmit",
       "Fl32_Portal_Back_Web_Api_Stream_Auth"
     ]
