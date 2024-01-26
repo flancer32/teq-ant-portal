@@ -69,7 +69,7 @@ export default class Fl32_Portal_Back_Mod_Events_Stream_Registry {
                     if (index !== -1) {
                         if (items.length === 1) delete _byUser[userUuid];
                         else items.splice(index, 1);
-                        logger.info(`The user-to-stream mapping is deleted for user '${userUuid}'.`);
+                        logger.info(`The user-to-stream mapping is deleted for user '${userUuid}' and stream '${streamUuid}'.`);
                     }
                 }
                 // remove from `byFront` map
@@ -81,7 +81,7 @@ export default class Fl32_Portal_Back_Mod_Events_Stream_Registry {
                     if (index !== -1) {
                         if (items.length === 1) delete _byFront[frontUuid];
                         else items.splice(index, 1);
-                        logger.info(`The front-to-stream mapping is deleted for front '${frontUuid}'.`);
+                        logger.info(`The front-to-stream mapping is deleted for front '${frontUuid}' and stream '${streamUuid}'.`);
                     }
                 }
                 // remove stream from the _store
@@ -92,21 +92,27 @@ export default class Fl32_Portal_Back_Mod_Events_Stream_Registry {
 
         /**
          * Get one stream for the given identifier.
-         * @param {string} [streamUuid]
-         * @param {string} [userUuid]
-         * @return {Fl32_Portal_Back_Mod_Events_Stream|null}
-         * TODO: add getStreams({...})
+         * @param {string} streamUuid
+         * @return {Fl32_Portal_Back_Mod_Events_Stream}
          */
-        this.getStream = function ({streamUuid, userUuid}) {
-            if (streamUuid) return _store[streamUuid];
+        this.getStream = function (streamUuid) {
+            return _store[streamUuid];
+        };
+
+        /**
+         * Get al opened streams by user UUID.
+         * @param {string} userUuid
+         * @return {Fl32_Portal_Back_Mod_Events_Stream[]}
+         */
+        this.getStreams = function (userUuid) {
+            const res = [];
             if (userUuid) {
                 const ids = _byUser[userUuid];
-                if (Array.isArray(ids)) {
-                    const [firstStreamUuid] = ids;
-                    return _store[firstStreamUuid];
-                }
+                if (Array.isArray(ids))
+                    for (const id of ids)
+                        res.push(_store[id]);
             }
-            return null;
+            return res;
         };
 
     }

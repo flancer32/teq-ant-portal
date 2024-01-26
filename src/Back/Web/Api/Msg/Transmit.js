@@ -60,14 +60,16 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                 logger.info(`New message is registered as #${bid}.`);
                 // TODO: validate host to receive the message
                 const userUuid = letter.to.user;
-                const stream = modRegistry.getStream({userUuid});
-                if (stream) {
-                    logger.info(`The stream '${stream.getStreamUuid()}' is found for user '${userUuid}'.`);
-                    const cover = dtoCover.createDto();
-                    cover.payload = letter;
-                    cover.type = TYPE.LETTER;
-                    stream.write(letter);
-                    res.success = true;
+                const streams = modRegistry.getStreams(userUuid);
+                for (const stream of streams) {
+                    if (stream) {
+                        logger.info(`The stream '${stream.getStreamUuid()}' is found for user '${userUuid}'.`);
+                        const cover = dtoCover.createDto();
+                        cover.payload = letter;
+                        cover.type = TYPE.LETTER;
+                        stream.write(cover);
+                        res.success = true;
+                    }
                 }
                 logger.info(`Response: ${JSON.stringify(res)}`);
             } catch (error) {

@@ -9,7 +9,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
      * @param {Fl32_Portal_Shared_Web_Api_Stream_Auth} endAuth
      * @param {Fl32_Auth_Front_Mod_Session} modSession
      * @param {Fl32_Portal_Front_Mod_TabUuid} modTabUuid
-     * @param {Fl32_Portal_Front_Mod_Event_Dispatcher} modDispatcher
+     * @param {Fl32_Portal_Front_Mod_Msg_Dispatcher} modDispatcher
      * @param {Fl32_Auth_Shared_Api_Crypto_Scrambler} modScrambler
      * @param {Fl32_Portal_Shared_Mod_Stream_Signature} modSignature
      * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate} dtoAuth
@@ -24,7 +24,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             Fl32_Portal_Shared_Web_Api_Stream_Auth$: endAuth,
             Fl32_Auth_Front_Mod_Session$: modSession,
             Fl32_Portal_Front_Mod_TabUuid$: modTabUuid,
-            Fl32_Portal_Front_Mod_Event_Dispatcher$: modDispatcher,
+            Fl32_Portal_Front_Mod_Msg_Dispatcher$: modDispatcher,
             Fl32_Auth_Shared_Api_Crypto_Scrambler$: modScrambler,
             Fl32_Portal_Shared_Mod_Stream_Signature$: modSignature,
             Fl32_Portal_Shared_Dto_Msg_Type_Authenticate$: dtoAuth,
@@ -84,7 +84,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                             const letter = dtoLetter.createDto(cover.payload);
                             logger.info(`Message: ${JSON.stringify(letter)}`);
                             const event = new Event(letter.type);
-                            event.data = letter;
+                            event[DEF.A_DATA] = letter;
                             modDispatcher.dispatchEvent(event);
                         } else logger.error(`Unknown portal message: ${message.data}`);
                     } else {

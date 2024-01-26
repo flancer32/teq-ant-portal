@@ -40,8 +40,8 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
                 /** @type {Fl32_Portal_Back_RDb_Schema_Msg_Queue.Dto[]} */
                 const all = await crud.readSet(trx, rdbQueue, where);
                 if (all.length) {
-                    const stream = modRegistry.getStream({userUuid});
                     logger.info(`Start the sending of '${all.length}' delayed messages to the user '${userUuid}'.`);
+                    const streams = modRegistry.getStreams(userUuid);
                     for (const one of all) {
                         const letter = dtoLetter.createDto();
                         letter.body = one.body;
@@ -55,8 +55,10 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
                         const cover = dtoCover.createDto();
                         cover.payload = letter;
                         cover.type = TYPE.LETTER;
-                        stream.write(cover);
-                        logger.info(`The message '${one.uuid}' is sent to the user '${userUuid}'.`);
+                        for (const stream of streams) {
+                            stream.write(cover);
+                            logger.info(`The message '${one.uuid}' is sent to the user '${userUuid}', stream ${stream.getStreamUuid()}.`);
+                        }
                     }
                 }
                 await trx.commit();

@@ -1,7 +1,7 @@
 /**
- * The dispatcher for events received from the back.
+ * The dispatcher for (letter) messages received from the back.
  */
-export default class Fl32_Portal_Front_Mod_Event_Dispatcher extends EventTarget {
+export default class Fl32_Portal_Front_Mod_Msg_Dispatcher extends EventTarget {
     /**
      * @param {TeqFw_Core_Shared_Api_Logger} logger -  instance
      */

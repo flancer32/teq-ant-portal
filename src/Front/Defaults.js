@@ -5,6 +5,8 @@ export default class Fl32_Portal_Front_Defaults {
     /** @type {Fl32_Portal_Shared_Defaults} */
     SHARED;
 
+    A_DATA = 'portal.msg'; // the name of the event's attribute with message payload to use with Event() objects
+
     /**
      * @param {Fl32_Portal_Shared_Defaults} SHARED
      */

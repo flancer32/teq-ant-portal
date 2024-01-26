@@ -21,7 +21,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
 
         // INSTANCE'S METHODS
         /**
-         * @param {string} msg
+         * @param {Object} msg
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} from
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} to
          * @param {string} type
@@ -30,7 +30,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
         this.send = async function (msg, from, to, type) {
             logger.info(`Sending the message to the host.`);
             const dto = dtoLetter.createDto();
-            dto.payload = msg;
+            dto.body = JSON.stringify(msg);
             dto.dateExpire = addDays(7);
             dto.from = from;
             dto.to = to;
