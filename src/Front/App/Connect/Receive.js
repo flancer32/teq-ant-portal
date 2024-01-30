@@ -68,7 +68,19 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
         }
 
         // INSTANCE'S METHODS
-        this.open = async function () {
+
+        /**
+         * @return {boolean}
+         */
+        this.isClosed = function () {
+            return _source.readyState === EventSource.CLOSED;
+        };
+
+        /**
+         * @param {function} onOpen - callback function to run when SSE connection is opened
+         * @return {Promise<void>}
+         */
+        this.open = async function ({onOpen} = {}) {
             const tabId = modTabUuid.get();
             const url = `${URL}/${tabId}`;
             logger.info(`Open the SSE stream for tab '${tabId}'.`);
@@ -95,6 +107,9 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                 } catch (e) {
                     logger.error(e);
                 }
+            });
+            _source.addEventListener('open', () => {
+                if (typeof onOpen === 'function') onOpen();
             });
         };
 
