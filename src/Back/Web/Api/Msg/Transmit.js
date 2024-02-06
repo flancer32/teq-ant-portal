@@ -11,6 +11,8 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
      * @param {TeqFw_Db_Back_Api_RDb_CrudEngine} crud
      * @param {Fl32_Portal_Back_RDb_Schema_Msg_Queue} rdbQueue
      * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
+     * @param {Fl32_Auth_Back_Act_User_GetAllFronts} actGetAllFronts
+     * @param {TeqFw_Web_Push_Back_Act_Subscript_SendMsg.act|function} actSend
      * @param {Fl32_Portal_Shared_Dto_Msg_Cover} dtoCover
      * @param {typeof Fl32_Portal_Shared_Enum_Msg_Type} TYPE
      */
@@ -22,6 +24,8 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
             TeqFw_Db_Back_Api_RDb_CrudEngine$: crud,
             Fl32_Portal_Back_RDb_Schema_Msg_Queue$: rdbQueue,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
+            Fl32_Auth_Back_Act_User_GetAllFronts$: actGetAllFronts,
+            TeqFw_Web_Push_Back_Act_Subscript_SendMsg$: actSend,
             Fl32_Portal_Shared_Dto_Msg_Cover$: dtoCover,
             Fl32_Portal_Shared_Enum_Msg_Type$: TYPE,
         }
@@ -42,10 +46,34 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
          * @returns {Promise<void>}
          */
         this.process = async function (req, res, context) {
-            const trx = await conn.startTransaction();
-            try {
-                const letter = req.letter;
-                logger.info(`Request '${JSON.stringify(letter.type)}' from '${JSON.stringify(letter.from)}' to '${JSON.stringify(letter.to)}'.`);
+            // FUNCS
+
+            /**
+             * Save new message to the queue.
+             * @param { TeqFw_Db_Back_RDb_ITrans} trx
+             * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto} letter
+             * @return {Promise<number>}
+             */
+            async function pushNotification(trx, letter) {
+                let res = 0;
+                const uuid = letter.to.user;
+                const fronts = await actGetAllFronts.act({trx, uuid});
+                const title = `New message in PerCom.`;
+                const body = `You have a new '${letter.type}' message from '${letter.from.user}'.`;
+                for (const front of fronts) {
+                    const {code} = await actSend({trx, title, body, frontId: front.bid});
+                    if (code) res++;
+                }
+                return res;
+            }
+
+            /**
+             * Save new message to the queue.
+             * @param { TeqFw_Db_Back_RDb_ITrans} trx
+             * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto} letter
+             * @return {Promise<number>}
+             */
+            async function registerMessage(trx, letter) {
                 const dto = rdbQueue.createDto();
                 dto.body = letter.body;
                 dto.date_expire = letter.dateExpire;
@@ -56,11 +84,17 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                 dto.type = letter.type;
                 dto.uuid = letter.uuid;
                 const {[A_QUEUE.BID]: bid} = await crud.create(trx, rdbQueue, dto);
-                await trx.commit();
-                logger.info(`New message is registered as #${bid}.`);
-                // TODO: validate host to receive the message
+                return bid;
+            }
+
+            /**
+             * Send message to receiver with SSE.
+             * @param {Fl32_Portal_Back_Mod_Events_Stream[]} streams
+             * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto} letter
+             */
+            function writeStreams(streams, letter) {
+                let res = 0;
                 const userUuid = letter.to.user;
-                const streams = modRegistry.getStreams(userUuid);
                 for (const stream of streams) {
                     if (stream) {
                         logger.info(`The stream '${stream.getStreamUuid()}' is found for user '${userUuid}'.`);
@@ -68,9 +102,30 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                         cover.payload = letter;
                         cover.type = TYPE.LETTER;
                         stream.write(cover);
-                        res.success = true;
+                        res++;
                     }
                 }
+                return res;
+            }
+
+            // MAIN
+            const trx = await conn.startTransaction();
+            try {
+                const letter = req.letter;
+                logger.info(`Request '${JSON.stringify(letter.type)}' from '${JSON.stringify(letter.from)}' to '${JSON.stringify(letter.to)}'.`);
+                const bid = await registerMessage(trx, letter);
+                logger.info(`New message is registered as #${bid}.`);
+                // TODO: validate host to receive the message
+                const streams = modRegistry.getStreams(letter.to.user);
+                if (streams.length) {
+                    const sent = writeStreams(streams, letter);
+                    res.success = (sent > 0);
+                } else {
+                    // there is no opened SSE streams to the receiver, use Push API
+                    const sent = await pushNotification(trx, letter);
+                    res.success = (sent > 0);
+                }
+                await trx.commit();
                 logger.info(`Response: ${JSON.stringify(res)}`);
             } catch (error) {
                 logger.error(error);

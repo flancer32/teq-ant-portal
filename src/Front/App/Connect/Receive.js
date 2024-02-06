@@ -55,6 +55,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             const keys = modSession.getUser().keysSign;
             const signed = modScrambler.sign(textToSign, keys.secret);
             const req = endAuth.createReq();
+            req.frontUuid = frontUuid;
             req.message = signed;
             req.userUuid = userUuid;
             /** @type {Fl32_Portal_Shared_Web_Api_Stream_Auth.Response} */

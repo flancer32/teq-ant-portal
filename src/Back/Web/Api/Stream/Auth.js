@@ -12,6 +12,7 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
      * @param {Fl32_Portal_Shared_Mod_Stream_Signature} modSignature
      * @param {Fl32_Portal_Back_Mod_Events_Stream_Registry} modRegistry
      * @param {Fl32_Auth_Back_Act_User_Read} actUserRead
+     * @param {Fl32_Auth_Back_Act_Session_Register} actSessReg
      * @param {Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue} aQueue
      */
     constructor(
@@ -23,6 +24,7 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
             Fl32_Portal_Shared_Mod_Stream_Signature$: modSignature,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
             Fl32_Auth_Back_Act_User_Read$: actUserRead,
+            Fl32_Auth_Back_Act_Session_Register$: actSessReg,
             Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue$: aQueue,
         }
     ) {
@@ -43,9 +45,10 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
         this.process = async function (req, res, context) {
             const trx = await conn.startTransaction();
             try {
+                const front = req.frontUuid;
                 const signed = req.message;
                 const uuid = req.userUuid;
-                logger.info(`Authorize opened SSE stream for user '${uuid}'.`);
+                logger.info(`Authorize opened SSE stream for user ${uuid}, front ${front}.`);
                 /** @type {Fl32_Auth_Back_RDb_Schema_User.Dto} */
                 const found = await actUserRead.act({trx, uuid});
                 if (found) {
@@ -54,6 +57,7 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
                     const {userUuid, frontUuid, tabUuid, streamUuid} = modSignature.decompose(signature);
                     // TODO: should we use `tabUuid` in the authorization process?
                     modRegistry.authorize(userUuid, frontUuid, streamUuid);
+                    await actSessReg.act({trx, userUuid, frontUuid});
                     res.success = true;
                     aQueue.processDelayed(userUuid).catch(logger.error);
                 }

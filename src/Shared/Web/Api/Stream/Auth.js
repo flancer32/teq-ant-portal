@@ -11,6 +11,11 @@ const NS = 'Fl32_Portal_Shared_Web_Api_Stream_Auth';
 class Request {
     static namespace = NS;
     /**
+     * The front UUID.
+     * @type {string}
+     */
+    frontUuid;
+    /**
      * The signed message.
      * @type {string}
      */
@@ -53,6 +58,7 @@ export default class Fl32_Portal_Shared_Web_Api_Stream_Auth {
             // create new DTO
             const res = new Request();
             // cast known attributes
+            res.frontUuid = cast.string(data?.frontUuid);
             res.message = cast.string(data?.message);
             res.userUuid = cast.string(data?.userUuid);
             return res;
