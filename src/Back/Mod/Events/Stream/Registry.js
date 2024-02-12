@@ -28,7 +28,7 @@ export default class Fl32_Portal_Back_Mod_Events_Stream_Registry {
          */
         const _store = {};
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
 
         /**
          * Register just opened SSE stream.

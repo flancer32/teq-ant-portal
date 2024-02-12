@@ -27,7 +27,7 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth_A_Queue {
         // VARS
         const A_QUEUE = rdbQueue.getAttributes();
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
         /**
          * Send all delayed messages from the queue to the given user.
          * @param {string} userUuid

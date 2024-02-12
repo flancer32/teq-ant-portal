@@ -19,7 +19,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
         }
     ) {
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
         /**
          * @param {Object} msg
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} from

@@ -98,7 +98,7 @@ export default class Fl32_Portal_Front_App_Connect_Manager {
             }
         }
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
 
         /**
          * Open the SSE connection and start the state monitoring.

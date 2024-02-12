@@ -16,7 +16,7 @@ export default class Fl32_Portal_Back_Mod_Events_Stream {
         let _messageId = 1; // the first message is the start streaming message
         let _userUuid;
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
 
         /**
          * Set UUIDs for authorized user & front.

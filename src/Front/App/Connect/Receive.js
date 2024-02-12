@@ -68,7 +68,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             }
         }
 
-        // INSTANCE'S METHODS
+        // INSTANCE METHODS
 
         /**
          * @return {boolean}
