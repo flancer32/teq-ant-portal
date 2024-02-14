@@ -25,7 +25,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} from
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} to
          * @param {string} type
-         * @return {Promise<void>}
+         * @return {Promise<Fl32_Portal_Shared_Web_Api_Msg_Transmit.Response>}
          */
         this.send = async function (msg, from, to, type) {
             logger.info(`Sending the '${type}' message to the host.`);
@@ -39,7 +39,8 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
             const req = endTrans.createReq();
             req.letter = dto;
             const res = await api.send(req, endTrans);
-            logger.info(`The '${type}' message to the host is sent: ${JSON.stringify(res)}`);
+            logger.info(`The message of type '${type}' has been transmitted to the host: ${JSON.stringify(res)}`);
+            return res;
         };
     }
 }

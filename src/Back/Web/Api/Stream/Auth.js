@@ -49,10 +49,10 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
                 const signed = req.message;
                 const uuid = req.userUuid;
                 logger.info(`Authorize opened SSE stream for user ${uuid}, front ${front}.`);
-                /** @type {Fl32_Auth_Back_RDb_Schema_User.Dto} */
-                const found = await actUserRead.act({trx, uuid});
+                /** @type {Fl32_Auth_Shared_Dto_User.Dto} */
+                const {shared: found} = await actUserRead.act({trx, uuid});
                 if (found) {
-                    const pub = found.key_verify;
+                    const pub = found.keyVerify;
                     const signature = modScrambler.verify(signed, pub);
                     const {userUuid, frontUuid, tabUuid, streamUuid} = modSignature.decompose(signature);
                     // TODO: should we use `tabUuid` in the authorization process?
