@@ -31,6 +31,7 @@ class Dto {
     type;
     /**
      * The message UUID.
+     * TODO: should we place this UUID on a level upper - to the Cover?
      * @type {string}
      */
     uuid;

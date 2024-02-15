@@ -68,6 +68,10 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             }
         }
 
+        async function processLetter(data) {
+// TODO: use or remove
+        }
+
         // INSTANCE METHODS
 
         /**
@@ -99,7 +103,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                             const letter = dtoLetter.createDto(cover.payload);
                             logger.info(`Message: ${JSON.stringify(letter)}`);
                             const event = new Event(letter.type);
-                            event[DEF.A_DATA] = letter;
+                            event[DEF.A_LETTER] = letter;
                             modDispatcher.dispatchEvent(event);
                         } else logger.error(`Unknown portal message: ${message.data}`);
                     } else {
