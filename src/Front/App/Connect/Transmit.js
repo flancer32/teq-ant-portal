@@ -7,7 +7,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
      * @param {TeqFw_Core_Shared_Util_Date.addDays|function} addDays
      * @param {TeqFw_Web_Api_Front_Web_Connect} api
      * @param {Fl32_Portal_Shared_Web_Api_Msg_Transmit} endTrans
-     * @param {Fl32_Portal_Shared_Api_Spy_Provide_Scrambler} provider
+     * @param {Fl32_Portal_Front_Api_Spy_Provide_Scrambler} provider
      * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter} dtoLetter
      */
     constructor(
@@ -16,7 +16,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
             'TeqFw_Core_Shared_Util_Date.addDays': addDays,
             TeqFw_Web_Api_Front_Web_Connect$: api,
             Fl32_Portal_Shared_Web_Api_Msg_Transmit$: endTrans,
-            Fl32_Portal_Shared_Api_Spy_Provide_Scrambler$: provider,
+            Fl32_Portal_Front_Api_Spy_Provide_Scrambler$: provider,
             Fl32_Portal_Shared_Dto_Msg_Type_Letter$: dtoLetter,
         }
     ) {
@@ -34,8 +34,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
             logger.info(`Sending the ${uuid} message of type ${type} to the server.`);
             const dto = dtoLetter.createDto();
             const plain = JSON.stringify(msg);
-            const scrambler = await provider.provide(from, to);
-            debugger
+            const scrambler = await provider.provide(from, to, type);
             if (scrambler) dto.body = scrambler.encrypt(plain);
             else dto.body = plain;
             dto.dateExpire = addDays(7);

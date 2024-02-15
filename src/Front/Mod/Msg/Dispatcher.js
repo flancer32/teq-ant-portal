@@ -7,13 +7,13 @@ export default class Fl32_Portal_Front_Mod_Msg_Dispatcher extends EventTarget {
     /**
      * @param {Ssk_Test_Front_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger -  instance
-     * @param {Fl32_Portal_Shared_Api_Spy_Provide_Scrambler} provider
+     * @param {Fl32_Portal_Front_Api_Spy_Provide_Scrambler} provider
      */
     constructor(
         {
             Ssk_Test_Front_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            Fl32_Portal_Shared_Api_Spy_Provide_Scrambler$: provider,
+            Fl32_Portal_Front_Api_Spy_Provide_Scrambler$: provider,
         }
     ) {
         super(); // construct the super class
@@ -26,7 +26,7 @@ export default class Fl32_Portal_Front_Mod_Msg_Dispatcher extends EventTarget {
                 const from = `${letter.from.user}:${letter.from.host}`;
                 logger.info(`The portal message '${letter.uuid}' from '${from}' is received.`);
                 /** @type {Fl32_Portal_Shared_Api_Crypto_Scrambler} */
-                const scrambler = await provider.provide(letter.from, letter.to);
+                const scrambler = await provider.provide(letter.from, letter.to, letter.type);
                 const plain = (scrambler) ? scrambler.decrypt(letter.body) : letter.body;
                 event[DEF.MOD_PORTAL.A_MSG] = JSON.parse(plain);
                 return dispatchEvent.apply(this, [event]);
