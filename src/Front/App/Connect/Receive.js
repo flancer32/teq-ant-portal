@@ -43,12 +43,12 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
 
         /**
          * Sign identification data and send the signature to the back.
-         * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate.Dto} data
+         * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate.Dto} dto
          * @return {Promise<void>}
          */
-        async function processAuth(data) {
+        async function hndlMsgAuth(dto) {
             const frontUuid = modSession.getFrontUuid();
-            const streamUuid = data.streamUuid;
+            const streamUuid = dto.streamUuid;
             const tabUuid = modTabUuid.get();
             const userUuid = modSession.getUserUuid();
             const textToSign = modSignature.compose(userUuid, frontUuid, tabUuid, streamUuid);
@@ -68,8 +68,17 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             }
         }
 
-        async function processLetter(data) {
-// TODO: use or remove
+        /**
+         * Use the Dispatcher to process incoming message (letter).
+         * @param {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto}dto
+         * @return {Promise<void>}
+         */
+        async function hndlMsgLetter(dto) {
+            // don't trace the body - it is encrypted.
+            logger.info(`Message ${dto.uuid} of type ${dto.type} is received from ${JSON.stringify(dto.from)}`);
+            const event = new Event(dto.type);
+            event[DEF.A_LETTER] = dto;
+            modDispatcher.dispatchEvent(event);
         }
 
         // INSTANCE METHODS
@@ -97,14 +106,11 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
                         /** @type {Fl32_Portal_Shared_Dto_Msg_Cover.Dto} */
                         const cover = JSON.parse(data);
                         if (cover.type === TYPE.AUTHENTICATE) {
-                            const auth = dtoAuth.createDto(cover.payload);
-                            processAuth(auth);
+                            const dto = dtoAuth.createDto(cover.payload);
+                            hndlMsgAuth(dto);
                         } else if (cover.type === TYPE.LETTER) {
-                            const letter = dtoLetter.createDto(cover.payload);
-                            logger.info(`Message: ${JSON.stringify(letter)}`);
-                            const event = new Event(letter.type);
-                            event[DEF.A_LETTER] = letter;
-                            modDispatcher.dispatchEvent(event);
+                            const dto = dtoLetter.createDto(cover.payload);
+                            hndlMsgLetter(dto);
                         } else logger.error(`Unknown portal message: ${message.data}`);
                     } else {
                         logger.info(`Event: ${JSON.stringify(data)}`);

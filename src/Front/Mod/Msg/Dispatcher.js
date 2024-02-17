@@ -23,8 +23,6 @@ export default class Fl32_Portal_Front_Mod_Msg_Dispatcher extends EventTarget {
             try {
                 /** @type {Fl32_Portal_Shared_Dto_Msg_Type_Letter.Dto} */
                 const letter = event[DEF.MOD_PORTAL.A_LETTER];
-                const from = `${letter.from.user}:${letter.from.host}`;
-                logger.info(`The portal message '${letter.uuid}' from '${from}' is received.`);
                 /** @type {Fl32_Portal_Shared_Api_Crypto_Scrambler} */
                 const scrambler = await provider.provide(letter.from, letter.to, letter.type);
                 const plain = (scrambler) ? scrambler.decrypt(letter.body) : letter.body;
