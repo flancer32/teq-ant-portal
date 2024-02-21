@@ -22,8 +22,22 @@ class Request {
  */
 class Response {
     static namespace = NS;
-    /** @type {boolean} */
-    success;
+    /**
+     * 'true' if the WebPush notification is sent to the receiver of the message.
+     * The receiver must have at least one front with active WebPush subscription.
+     * @type {boolean}
+     */
+    isNotified;
+    /**
+     * 'true' if the message is stored on the back.
+     * @type {boolean}
+     */
+    isStored;
+    /**
+     * 'true' if the receiver was online and the message was transmitted to the receiver immediately.
+     * @type {boolean}
+     */
+    isTransmitted;
 }
 
 /**
@@ -62,7 +76,9 @@ export default class Fl32_Portal_Shared_Web_Api_Msg_Transmit {
             // create new DTO
             const res = new Response();
             // cast known attributes
-            res.success = cast.boolean(data?.success);
+            res.isNotified = cast.boolean(data?.isNotified);
+            res.isStored = cast.boolean(data?.isStored);
+            res.isTransmitted = cast.boolean(data?.isTransmitted);
             return res;
         };
     }

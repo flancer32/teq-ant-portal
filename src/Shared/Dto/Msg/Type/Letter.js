@@ -22,6 +22,11 @@ class Dto {
     dateExpire;
     /** @type {Fl32_Portal_Shared_Dto_Msg_Address.Dto} */
     from;
+    /**
+     * 'true' if message should be transmitted immediately, w/o storing on the back.
+     * @type {boolean}
+     */
+    immediate;
     /** @type {Fl32_Portal_Shared_Dto_Msg_Address.Dto} */
     to;
     /**
@@ -62,6 +67,7 @@ export default class Fl32_Portal_Shared_Dto_Msg_Type_Letter {
             res.body = cast.string(data?.body);
             res.dateExpire = cast.date(data?.dateExpire);
             res.from = dtoAddr.createDto(data?.from);
+            res.immediate = cast.boolean(data?.immediate);
             res.to = dtoAddr.createDto(data?.to);
             res.type = cast.string(data?.type);
             res.uuid = cast.string(data?.uuid);

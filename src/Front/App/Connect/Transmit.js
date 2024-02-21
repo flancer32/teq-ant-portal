@@ -27,9 +27,10 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} from
          * @param {Fl32_Portal_Shared_Dto_Msg_Address.Dto} to
          * @param {string} type
+         * @param {boolean} immediate
          * @return {Promise<Fl32_Portal_Shared_Web_Api_Msg_Transmit.Response>}
          */
-        this.send = async function (msg, from, to, type) {
+        this.send = async function (msg, from, to, type, immediate = false) {
             const uuid = self.crypto.randomUUID();
             logger.info(`Sending the ${uuid} message of type ${type} to the server.`);
             const dto = dtoLetter.createDto();
@@ -39,6 +40,7 @@ export default class Fl32_Portal_Front_App_Connect_Transmit {
             else dto.body = plain;
             dto.dateExpire = addDays(7);
             dto.from = from;
+            dto.immediate = immediate;
             dto.to = to;
             dto.type = type;
             dto.uuid = uuid;

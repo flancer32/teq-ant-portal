@@ -16,7 +16,7 @@ class Dto {
      */
     payload;
     /**
-     * The type of the message - any string that is known to the sender and receiver.
+     * The type of the message - authentication or letter.
      * @type {string}
      * @see Fl32_Portal_Shared_Enum_Msg_Type
      */

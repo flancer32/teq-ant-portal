@@ -62,7 +62,10 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                 const body = `You have a new '${letter.type}' message from '${letter.from.user}'.`;
                 for (const front of fronts) {
                     const {code} = await actSend({trx, title, body, frontId: front.bid});
-                    if (code) res++;
+                    if (code) {
+                        res++;
+                        logger.info(`The WebPush notification is sent to the front '${front.uuid}' for user '${uuid}'.`);
+                    }
                 }
                 return res;
             }
@@ -113,17 +116,20 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
             try {
                 const letter = req.letter;
                 logger.info(`Request '${JSON.stringify(letter.type)}' from '${JSON.stringify(letter.from)}' to '${JSON.stringify(letter.to)}'.`);
-                const bid = await registerMessage(trx, letter);
-                logger.info(`New message is registered as #${bid}.`);
+                if (!letter.immediate) {
+                    const bid = await registerMessage(trx, letter);
+                    logger.info(`New message is registered as #${bid}.`);
+                    res.isStored = true;
+                }
                 // TODO: validate host to receive the message
                 const streams = modRegistry.getStreams(letter.to.user);
                 if (streams.length) {
                     const sent = writeStreams(streams, letter);
-                    res.success = (sent > 0);
+                    res.isTransmitted = (sent > 0);
                 } else {
                     // there is no opened SSE streams to the receiver, use Push API
                     const sent = await pushNotification(trx, letter);
-                    res.success = (sent > 0);
+                    res.isNotified = (sent > 0);
                 }
                 await trx.commit();
                 logger.info(`Response: ${JSON.stringify(res)}`);
