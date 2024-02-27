@@ -128,8 +128,10 @@ export default class Fl32_Portal_Back_Web_Api_Msg_Transmit {
                     res.isTransmitted = (sent > 0);
                 } else {
                     // there is no opened SSE streams to the receiver, use Push API
-                    const sent = await pushNotification(trx, letter);
-                    res.isNotified = (sent > 0);
+                    if (!letter.immediate) {
+                        const sent = await pushNotification(trx, letter);
+                        res.isNotified = (sent > 0);
+                    }
                 }
                 await trx.commit();
                 logger.info(`Response: ${JSON.stringify(res)}`);

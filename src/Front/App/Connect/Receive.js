@@ -10,7 +10,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
      * @param {Fl32_Portal_Shared_Web_Api_Msg_Remove} endRemove
      * @param {Fl32_Auth_Front_Mod_Session} modSession
      * @param {Fl32_Portal_Front_Mod_TabUuid} modTabUuid
-     * @param {Fl32_Portal_Front_Mod_Msg_Dispatcher} modDispatcher
+     * @param {Fl32_Portal_Front_Mod_Msg_Dispatcher} dispatcher
      * @param {Fl32_Auth_Shared_Api_Crypto_Scrambler} modScrambler
      * @param {Fl32_Portal_Shared_Mod_Stream_Signature} modSignature
      * @param {Fl32_Portal_Shared_Dto_Msg_Type_Authenticate} dtoAuth
@@ -26,7 +26,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             Fl32_Portal_Shared_Web_Api_Msg_Remove$: endRemove,
             Fl32_Auth_Front_Mod_Session$: modSession,
             Fl32_Portal_Front_Mod_TabUuid$: modTabUuid,
-            Fl32_Portal_Front_Mod_Msg_Dispatcher$: modDispatcher,
+            Fl32_Portal_Front_Mod_Msg_Dispatcher$: dispatcher,
             Fl32_Auth_Shared_Api_Crypto_Scrambler$: modScrambler,
             Fl32_Portal_Shared_Mod_Stream_Signature$: modSignature,
             Fl32_Portal_Shared_Dto_Msg_Type_Authenticate$: dtoAuth,
@@ -78,7 +78,7 @@ export default class Fl32_Portal_Front_App_Connect_Receive {
             logger.info(`Message ${dto.uuid} of type ${dto.type} is received from ${JSON.stringify(dto.from)}`);
             const event = new Event(dto.type);
             event[DEF.A_LETTER] = dto;
-            modDispatcher.dispatchEvent(event);
+            dispatcher.dispatchEvent(event);
         }
 
         // INSTANCE METHODS
