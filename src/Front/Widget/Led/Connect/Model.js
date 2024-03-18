@@ -6,17 +6,17 @@
  */
 export default class Fl32_Portal_Front_Widget_Led_Connect_Model {
     /**
-     * @param {TeqFw_Vue_Front_Ext_Vue} Vue
+     * @param {TeqFw_Vue_Front_Ext_Vue} extVue
      * @param {TeqFw_Web_Front_Api_Mod_Server_Connect_IState} modState
      */
     constructor(
         {
-            TeqFw_Vue_Front_Ext_Vue: Vue,
+            TeqFw_Vue_Front_Ext_Vue: extVue,
             TeqFw_Web_Front_Api_Mod_Server_Connect_IState$: modState,
         }
     ) {
         // VARS
-        const {ref} = Vue;
+        const {ref} = extVue.Vue;
         let _sse = ref(false); // the SSE connection is established
 
 
