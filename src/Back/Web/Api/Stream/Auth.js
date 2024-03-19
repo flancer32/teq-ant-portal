@@ -59,7 +59,7 @@ export default class Fl32_Portal_Back_Web_Api_Stream_Auth {
                     modRegistry.authorize(userUuid, frontUuid, streamUuid);
                     await actSessReg.act({trx, userUuid, frontUuid});
                     res.success = true;
-                    aQueue.processDelayed(userUuid).catch(logger.error);
+                    aQueue.processDelayed(userUuid).catch(logger.exception);
                 }
                 await trx.commit();
                 logger.info(`Response: ${JSON.stringify(res)}`);

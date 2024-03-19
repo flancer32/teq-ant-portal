@@ -92,7 +92,7 @@ export default class Fl32_Portal_Front_App_Connect_Manager {
                     }
                 }
                 if (window.navigator.onLine) {
-                    portIn.open({onOpen: watchOpened}).catch(logger.error);
+                    portIn.open({onOpen: watchOpened}).catch(logger.exception);
                     logger.info(`Try to open the SSE connection`);
                 }
             }
@@ -104,7 +104,7 @@ export default class Fl32_Portal_Front_App_Connect_Manager {
          * Open the SSE connection and start the state monitoring.
          */
         this.start = function () {
-            portIn.open({onOpen: watchOpened}).catch(logger.error);
+            portIn.open({onOpen: watchOpened}).catch(logger.exception);
         };
 
     }
