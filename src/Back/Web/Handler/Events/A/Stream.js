@@ -22,7 +22,7 @@ export default class Fl32_Portal_Back_Web_Handler_Events_A_Stream {
         {
             TeqFw_Core_Shared_Api_Logger$$: logger,
             Fl32_Portal_Back_Mod_Events_Stream_Registry$: modRegistry,
-            Fl32_Portal_Back_Mod_Events_Stream: Stream, // as a class
+            Fl32_Portal_Back_Mod_Events_Stream$AS: Stream, // as a class
         }
     ) {
         this.create = function (httpResp, tabId) {
